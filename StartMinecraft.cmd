@@ -39,7 +39,7 @@ goto Authorization.XBL
 
 
 :Authorization.XBL
-for /f "delims=" %%i in ('curl -s -X POST --json "{\"Properties\": {\"AuthMethod\": \"RPS\", \"SiteName\": \"user.auth.xboxlive.com\", \"RpsTicket\": \"d=%access_token%\"}, \"RelyingParty\": \"http://auth.xboxlive.com\", \"TokenType\": \"JWT\"}" https://user.auth.xboxlive.com/user/authenticate') do set json=%%i
+for /f "delims=" %%i in ('curl -s -X POST --json "{\"Properties\": {\"AuthMethod\": \"RPS\", \"SiteName\": \"user.auth.xboxlive.com\", \"RpsTicket\": \"d^=%access_token%\"}, \"RelyingParty\": \"http://auth.xboxlive.com\", \"TokenType\": \"JWT\"}" https://user.auth.xboxlive.com/user/authenticate') do set json=%%i
 
 set Filter=Token,DisplayClaims.xui[0].uhs
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !json! ^| jq -j ".%%i"') do set "%%i=%%a"
@@ -57,7 +57,7 @@ pause > nul
 
 
 :Authorization.Minecraft
-for /f "delims=" %%i in ('curl -s -X POST --json "{\"identityToken\": \"XBL3.0 x=%DisplayClaims.xui[0].uhs%;%Token%\"}" https://api.minecraftservices.com/authentication/login_with_xbox') do set json=%%i
+for /f "delims=" %%i in ('curl -s -X POST --json "{\"identityToken\": \"XBL3.0 x^=%DisplayClaims.xui[0].uhs%^;%Token%\"}" https://api.minecraftservices.com/authentication/login_with_xbox ^| jq -c .') do set json=%%i
 
 set Filter=access_token
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !json! ^| jq -j ".%%i"') do set "%%i=%%a"
@@ -66,12 +66,12 @@ pause > nul
 
 
 :Authorization.GetOwnship
-for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %access_token%" https://api.minecraftservices.com/entitlements/mcstore') do set json=%%i
+for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %access_token%" https://api.minecraftservices.com/entitlements/mcstore ^| jq -c .') do set json=%%i
 
 pause > nul
 
 
 :Authorization.GetProfile
-for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %access_token%" https://api.minecraftservices.com/minecraft/profile') do set json=%%i
+for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %access_token%" https://api.minecraftservices.com/minecraft/profile ^| jq -c .') do set json=%%i
 
 pause > nul
