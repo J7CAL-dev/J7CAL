@@ -1,10 +1,4 @@
-@echo off
-chcp 65001 > nul
-set %1
-setlocal ENABLEDELAYEDEXPANSION
-setlocal ENABLEEXTENSIONS
-
-:Start
+:Authorization.Start
 call:Authorization.Request
 call:Authorization.Response
 call:Authorization.XBL
@@ -31,7 +25,9 @@ for /f "delims=" %%i in ('curl -s -X POST -d "grant_type=urn:ietf:params:oauth:g
 set Filter=error,error_description
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Authorization.Response.JSON! ^| jq -j ".%%i"') do set "Authorization.Response.%%i=%%a"
 if %Authorization.Response.error%==authorization_pending timeout /t %Authorization.Request.interval% /nobreak > nul & goto Authorization.Response
-if NOT %Authorization.Response.error%==null echo %Authorization.Response.error_description% & goto Authorization.Request
+if %Authorization.Response.error%==authorization_declined echo 用户拒绝了授权请求。 & set %ERRORLEVEL%=1 & goto :EOF
+if %Authorization.Response.error%==expired_token echo 授权请求已经过期。 & set %ERRORLEVEL%=1 & goto :EOF
+if NOT %Authorization.Response.error%==null echo %Authorization.Response.error% & echo %Authorization.Response.error_description% & set %ERRORLEVEL%=1 & goto :EOF
 
 set Filter=access_token,refresh_token
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Authorization.Response.JSON! ^| jq -j ".%%i"') do set "Authorization.Response.%%i=%%a"
@@ -85,3 +81,5 @@ goto :EOF
 for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %Authorization.Minecraft.access_token%" https://api.minecraftservices.com/minecraft/profile ^| jq -c .') do set "Authorization.Profile.JSON=%%i"
 
 goto :EOF
+
+
