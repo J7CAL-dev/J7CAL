@@ -7,12 +7,12 @@ echo %return%
 
 goto :EOF
 
-:Json.GetValueFromFile <returnString> <FilePath> <jsonPath>
-for /f "delims=" %%i in ('jq -j "%3" "%2"') do set "%~1=%%i"
+:Json.GetValueFromFile <returnString> <jsonFile> <jsonPath>
+for /f "delims=" %%i in ('jq -j "%~3" "%~2"') do set "%~1=%%i"
 
 goto :EOF
 
 :Json.GetValueFromText <returnString> <json> <jsonPath>
-for /f "delims=" %%i in ('echo %~2 ^| jq -j %3') do set "%~1=%%i"
+for /f "delims=" %%i in ('echo %~2 ^| jq %3') do set "%~1=%%i"
 
 

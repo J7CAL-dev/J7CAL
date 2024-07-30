@@ -5,8 +5,8 @@ goto :EOF
 
 :VersionParser.GetClientJarInfo <versionPath> <version>
 @echo off
-set "versionPath=%1"
-set "version=%2"
+set "versionPath=%~1"
+set "version=%~2"
 set "VersionParser.GetClientJarInfo.clientJsonPath=%versionPath%\versions\%version%\%version%.json"
 ::for /f "delims=" %%i in ('jq -j ".downloads.client.sha1" "%VersionParser.GetClientJarInfo.clientJsonPath%"') do set "VersionParser.GetClientJarInfo.clientSha1=%%i"
 ::for /f "delims=" %%i in ('jq -j ".downloads.client.size" "%VersionParser.GetClientJarInfo.clientJsonPath%"') do set "VersionParser.GetClientJarInfo.clientSize=%%i"
