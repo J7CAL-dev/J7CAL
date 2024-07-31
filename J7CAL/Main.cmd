@@ -7,7 +7,7 @@ setlocal ENABLEEXTENSIONS
 
 :Start
 title J7CAL
-call:Download.Minecraft.List
+call:Download.Minecraft.Start
 goto :EOF
 
 
