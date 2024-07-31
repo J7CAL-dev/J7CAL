@@ -8,12 +8,7 @@ goto :EOF
 :VersionParser.GetClientJarInfo
 set "VersionParser.GetClientJarInfo.jsonPath=%VersionParser.GetClientJarInfo.versionPath%\versions\%VersionParser.GetClientJarInfo.version%\%VersionParser.GetClientJarInfo.version%.json"
 set Filter=sha1,size,url
-for %%i in (%Filter%) do (
-    set Json.GetValueFromFile.jsonFile=%VersionParser.GetClientJarInfo.jsonPath%
-    set Json.GetValueFromFile.jsonFilter=.downloads.client.%%i
-    call:Json.GetValueFromFile
-    set VersionParser.GetClientJarInfo.%%i=%Json.GetValueFromFile.result%
-)
+for %%i in (%Filter%) do for /f "delims=" %%a in ('jq -j ".downloads.client.%%i" "%VersionParser.GetClientJarInfo.jsonPath%"') do set "VersionParser.GetClientJarInfo.%%i=%%a"
 echo %VersionParser.GetClientJarInfo.sha1%
 
 goto :EOF
