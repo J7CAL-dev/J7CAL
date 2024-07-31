@@ -1,20 +1,20 @@
 :VersionParser.test
-call:VersionParser.GetClientJarInfo C:\Things\J7CAL\J7CAL\Modules\.minecraft 1.21
+call:VersionParser.GetClientJarInfo C:\Users\Hill233\AppData\Roaming\.minecraft 1.21
 
 goto :EOF
 
 :VersionParser.GetClientJarInfo <versionPath> <version>
-@echo off
-set "versionPath=%~1"
-set "version=%~2"
-set "VersionParser.GetClientJarInfo.clientJsonPath=%versionPath%\versions\%version%\%version%.json"
-::for /f "delims=" %%i in ('jq -j ".downloads.client.sha1" "%VersionParser.GetClientJarInfo.clientJsonPath%"') do set "VersionParser.GetClientJarInfo.clientSha1=%%i"
-::for /f "delims=" %%i in ('jq -j ".downloads.client.size" "%VersionParser.GetClientJarInfo.clientJsonPath%"') do set "VersionParser.GetClientJarInfo.clientSize=%%i"
-::for /f "delims=" %%i in ('jq -j ".downloads.client.url" "%VersionParser.GetClientJarInfo.clientJsonPath%"') do set "VersionParser.GetClientJarInfo.clientUrl=%%i"
-call:Json.GetValueFromFile VersionParser.GetClientJarInfo.clientSha1 VersionParser.GetClientJarInfo.clientJsonPath ".downloads.client.sha1"
-call:Json.GetValueFromFile VersionParser.GetClientJarInfo.clientSize VersionParser.GetClientJarInfo.clientJsonPath ".downloads.client.size"
-call:Json.GetValueFromFile VersionParser.GetClientJarInfo.clientUrl VersionParser.GetClientJarInfo.clientJsonPath ".downloads.client.url"
-echo %VersionParser.GetClientJarInfo.clientSha1%
+set "VersionParser.GetClientJarInfo.jsonPath=%~1\versions\%~2\%~2.json"
+::for /f "delims=" %%i in ('jq -j ".downloads.client.sha1" "%VersionParser.GetClientJarInfo.jsonPath%"') do set "VersionParser.GetClientJarInfo.sha1=%%i"
+::for /f "delims=" %%i in ('jq -j ".downloads.client.size" "%VersionParser.GetClientJarInfo.jsonPath%"') do set "VersionParser.GetClientJarInfo.size=%%i"
+::for /f "delims=" %%i in ('jq -j ".downloads.client.url" "%VersionParser.GetClientJarInfo.jsonPath%"') do set "VersionParser.GetClientJarInfo.url=%%i"
+::call:Json.GetValueFromFile VersionParser.GetClientJarInfo.sha1 VersionParser.GetClientJarInfo.jsonPath ".downloads.client.sha1"
+::call:Json.GetValueFromFile VersionParser.GetClientJarInfo.size VersionParser.GetClientJarInfo.jsonPath ".downloads.client.size"
+::call:Json.GetValueFromFile VersionParser.GetClientJarInfo.url VersionParser.GetClientJarInfo.jsonPath ".downloads.client.url"
+set Filter=sha1,size,url
+for /f "delims=" %%i in (%Filter%) do (call:Json.GetValueFromText VersionParser.GetClientJarInfo.%%i VersionParser.GetClientJarInfo.jsonPath)
+
+echo %VersionParser.GetClientJarInfo.sha1%
 
 goto :EOF
 
