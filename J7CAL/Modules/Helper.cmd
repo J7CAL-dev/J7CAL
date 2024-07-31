@@ -1,20 +1,22 @@
 :Helper.test
-call:Helper.GetFileSha1 return "C:\Users\Hill233\Downloads\图吧工具箱202407\图吧工具箱2024.exe"
-echo %return%
-call:Helper.GetFileSize return "C:\Users\Hill233\Downloads\图吧工具箱202407\图吧工具箱2024.exe"
-echo %return%
+set "Helper.GetFileSha1.file=C:\Users\Hill233\Downloads\图吧工具箱202407\图吧工具箱2024.exe"
+call:Helper.GetFileSha1
+echo %Helper.GetFileSha1.return%
+set "Helper.GetFileSize.file=C:\Users\Hill233\Downloads\图吧工具箱202407\图吧工具箱2024.exe"
+call:Helper.GetFileSize
+echo %Helper.GetFileSize.return%
 
 goto :EOF
 
-:Helper.GetFileSha1 <returnSha1> <filePath>
-for /f "eol=C skip=1" %%i in ('certutil -hashfile %~2 SHA1') do (
-    set "%~1=%%i"
+:Helper.GetFileSha1
+for /f "eol=C skip=1" %%i in ('certutil -hashfile %Helper.GetFileSha1.file% SHA1') do (
+    set "Helper.GetFileSha1.return=%%i"
 )
 
 goto :EOF
 
-:Helper.GetFileSize <returnSize> <filePath>
-for %%i in (%~2) do set %~1=%%~zi
+:Helper.GetFileSize
+for %%i in (%Helper.GetFileSize.file%) do set "Helper.GetFileSize.return=%%~zi"
 
 goto :EOF
 

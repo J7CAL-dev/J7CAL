@@ -8,7 +8,9 @@ setlocal ENABLEEXTENSIONS
 :Start
 title J7CAL
 ::call:Download.Minecraft.List
-call:VersionParser.GetClientJarInfo C:\Users\Hill233\AppData\Roaming\.minecraft 1.21
+set "VersionParser.GetClientJarInfo.versionPath=C:\Users\Hill233\AppData\Roaming\.minecraft"
+set "VersionParser.GetClientJarInfo.version=1.21"
+call:VersionParser.GetClientJarInfo
 goto :EOF
 
 

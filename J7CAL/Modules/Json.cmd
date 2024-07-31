@@ -1,17 +1,23 @@
 :Json.test
-call:Json.GetValueFromFile return C:\Things\J7CAL\J7CAL\Modules\.minecraft\versions\1.21\1.21.json .downloads.client.url
-echo %return%
-call:Json.GetValueFromText return "{"foo": 0}" .foo
-echo %return%
+set "Json.GetValueFromFile.jsonFile=C:\Users\Hill233\AppData\Roaming\.minecraft\versions\1.21\1.21.json"
+set Json.GetValueFromFile.jsonFilter=.downloads.client.url
+call:Json.GetValueFromFile
+echo %Json.GetValueFromFile.return%
+set "Json.GetValueFromText.json={"foo": 0}"
+set Json.GetValueFromFile.jsonFilter=.foo
+call:Json.GetValueFromText
+echo %Json.GetValueFromFile.return%
 
 goto :EOF
 
-:Json.GetValueFromFile <returnString> <jsonFile> <jsonFilter>
-for /f "delims=" %%i in ('jq -j "%~3" "%~2"') do set "%~1=%%i"
+:Json.GetValueFromFile
+for /f "delims=" %%i in ('jq -j "%Json.GetValueFromFile.jsonFilter%" "%Json.GetValueFromFile.jsonFile%"') do set "Json.GetValueFromFile.return=%%i"
 
 goto :EOF
 
-:Json.GetValueFromText <returnString> <json> <jsonFilter>
-for /f "delims=" %%i in ('echo %~2 ^| jq %3') do set "%~1=%%i"
+:Json.GetValueFromText
+for /f "delims=" %%i in ('echo %Json.GetValueFromFile.json% ^| jq %Json.GetValueFromFile.jsonFilter%') do set "Json.GetValueFromFile.return=%%i"
+
+goto :EOF
 
 
