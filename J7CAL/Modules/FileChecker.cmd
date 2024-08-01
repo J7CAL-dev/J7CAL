@@ -1,5 +1,0 @@
-
-
-:FileChecker.CheckMcFile <version> <versionPath>
-
-
