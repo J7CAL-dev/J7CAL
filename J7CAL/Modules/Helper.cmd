@@ -15,17 +15,20 @@ call:Helper.GetPathFromFullPath
 echo %Helper.GetPathFromFullPath.result%
 goto:EOF
 
+
 :Helper.GetFileSha1
 ::获取文件的SHA1值
 for /f "eol=C skip=1" %%i in ('certutil -hashfile %Helper.GetFileSha1.file% SHA1') do set "Helper.GetFileSha1.result=%%i"
 
 goto :EOF
 
+
 :Helper.GetFileSize
 ::获取文件的大小
 for %%i in (%Helper.GetFileSize.file%) do set "Helper.GetFileSize.result=%%~zi"
 
 goto :EOF
+
 
 :Helper.CheckFile
 ::从文件是否存在和大小和SHA1值同时检查一个文件是否正常 成功返回true 失败返回false
@@ -39,11 +42,13 @@ if %Helper.CheckFile.size%==%Helper.GetFileSize.result% (if %Helper.CheckFile.sh
 
 goto :EOF
 
+
 :Helper.CheckPath
 ::检查文件路径/目录路径的后面是否有反斜杠，如果有就删除
 if "%Helper.CheckPath.path:~-1%"=="\" set "Helper.CheckPath.result=%Helper.CheckPath.path:~,-1%"
 
 goto :EOF
+
 
 :Helper.GetPathFromFullPath
 ::从文件的绝对路径返回文件所处的目录路径

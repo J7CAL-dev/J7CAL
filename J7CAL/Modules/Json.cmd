@@ -10,10 +10,12 @@ echo %Json.GetValueFromFile.result%
 
 goto :EOF
 
+
 :Json.GetValueFromFile
 for /f "delims=" %%i in ('jq -j "%Json.GetValueFromFile.jsonFilter%" "%Json.GetValueFromFile.jsonFile%"') do set "Json.GetValueFromFile.result=%%i"
 
 goto :EOF
+
 
 :Json.GetValueFromText
 for /f "delims=" %%i in ('echo !Json.GetValueFromText.json! ^| jq %Json.GetValueFromText.jsonFilter%') do set "Json.GetValueFromText.return=%%i"
