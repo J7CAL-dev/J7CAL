@@ -13,6 +13,8 @@ echo %Helper.CheckFile.result%
 set "Helper.GetPathFromFullPath.file=C:\Users\Hill233\Downloads\图吧工具箱202407\图吧工具箱2024.exe"
 call:Helper.GetPathFromFullPath
 echo %Helper.GetPathFromFullPath.result%
+call:Helper.GetProcessorBitness
+echo %Helper.GetProcessorBitness.result%
 goto:EOF
 
 
@@ -56,6 +58,18 @@ for %%i in (%Helper.GetPathFromFullPath.file%) do set "Helper.GetPathFromFullPat
 set Helper.CheckPath.path=%Helper.GetPathFromFullPath.result%
 call:Helper.CheckPath
 set Helper.GetPathFromFullPath.result=%Helper.CheckPath.result%
+
+goto :EOF
+
+
+:Helper.GetProcessorBitness
+::获取处理器位数（不区分ARM64，AMD64，IA64）
+wmic os get osarchitecture | findstr "64" >nul
+if %errorlevel%==0 (
+    set Helper.GetProcessorBitness.result=64
+) else (
+    set Helper.GetProcessorBitness.result=32
+)
 
 goto :EOF
 
