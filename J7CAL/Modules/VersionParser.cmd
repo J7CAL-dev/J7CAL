@@ -9,12 +9,12 @@ echo %VersionParser.NameToPath.result%
 set VersionParser.GetClientLibrariesInfo.minecraftPath=C:\Users\Hill233\AppData\Roaming\.minecraft
 set VersionParser.GetClientLibrariesInfo.version=1.8.9
 call:VersionParser.GetClientLibrariesInfo
-for /l %%i in (0,1,%VersionParser.GetClientLibrariesInfo.librariesNumbers%) do (
-    echo !VersionParser.GetClientLibrariesInfo.%%i.sha1!
-    echo !VersionParser.GetClientLibrariesInfo.%%i.size!
-    echo !VersionParser.GetClientLibrariesInfo.%%i.url!
-    echo !VersionParser.GetClientLibrariesInfo.%%i.name!
-    echo !VersionParser.GetClientLibrariesInfo.%%i.isNatives!
+for /l %%i in (0,1,36) do (
+    echo !VersionParser.GetClientLibrariesInfo.result.%%i.sha1!
+    echo !VersionParser.GetClientLibrariesInfo.result.%%i.size!
+    echo !VersionParser.GetClientLibrariesInfo.result.%%i.url!
+    echo !VersionParser.GetClientLibrariesInfo.result.%%i.name!
+    echo !VersionParser.GetClientLibrariesInfo.result.%%i.isNatives!
 )
 
 goto :EOF
@@ -29,36 +29,21 @@ for %%i in (%Filter%) do for /f "delims=" %%a in ('jq -j .downloads.client.%%i "
 goto :EOF
 
 
-
-
 :VersionParser.GetClientLibrariesInfo
 ::获取指定版本的类库信息
 set "VersionParser.GetClientLibrariesInfo.jsonPath=%VersionParser.GetClientLibrariesInfo.minecraftPath%\versions\%VersionParser.GetClientLibrariesInfo.version%\%VersionParser.GetClientLibrariesInfo.version%.json"
-set Filter=sha1,size,url
+for /f "delims=" %%i in ('jq -r ".libraries|length" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do set VersionParser.GetClientJarInfo.librariesNumbers=%%i
 call:Helper.GetProcessorBitness
-for /f "delims=" %%i in ('jq -r ".libraries|map(select(.natives? and .natives.windows))|length" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do set "VersionParser.GetClientLibrariesInfo.librariesNativesNumbers=%%i"
-for /f "delims=" %%i in ('jq -r ".libraries|map(select(.natives?|not))|length" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do set "VersionParser.GetClientLibrariesInfo.librariesNumbers=%%i"
-for %%i in (%Filter%) do (
-    set count=0
-    for /f "delims=" %%a in ('jq -r ".libraries[]|select(.natives? and .natives.windows)|.natives.windows" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do (
-        set nativesSelect=%%a
-        set nativesSelect=\"!nativesSelect:${arch}=%Helper.GetProcessorBitness.result%!\"
-        for /f "delims=" %%b in ('jq -r ".libraries|map(select(.natives? and .natives.windows))|.[!count!].downloads.classifiers.!nativesSelect!.%%i" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do set VersionParser.GetClientLibrariesInfo.!count!.%%i=%%b
-        set VersionParser.GetClientLibrariesInfo.!count!.isNatives=true
-        set /a count+=1
-    )
-)
 set count=0
-for /f "delims=" %%a in ('jq -r ".libraries[]|select(.natives? and .natives.windows)|.name" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do set VersionParser.GetClientLibrariesInfo.!count!.name=%%a & set /a count+=1
-for %%i in (%Filter%) do (
-    for /f "delims=" %%a in ('jq -r ".libraries[]|select(.natives?|not)|.name" "%VersionParser.GetClientLibrariesInfo.jsonPath%"')do (
-        set VersionParser.GetClientLibrariesInfo.!count!.name=%%a
-        for /f "delims=" %%b in ('jq -r ".libraries|map(select(.natives?|not))|.[!count!].downloads.artifact.%%i" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do (
-            set VersionParser.GetClientLibrariesInfo.!count!.%%i=%%b
-            set VersionParser.GetClientLibrariesInfo.!count!.isNatives=false
-        )
-        set /a count+=1
+for /f "delims=" %%i in ('jq --arg arch %Helper.GetProcessorBitness.result% -r ".libraries[]|if.natives.windows?then(.natives.windows|gsub(\"\\$\\{arch\\}\";$arch))as$native|[(.name),(.downloads.classifiers[$native].sha1),(.downloads.classifiers[$native].size),(.downloads.classifiers[$native].url),true]|join(\",\")else[(.name),(.downloads.artifact.sha1),(.downloads.artifact.size),(.downloads.artifact.url),false]|join(\",\")end" "%VersionParser.GetClientLibrariesInfo.jsonPath%"') do (
+    for /f "tokens=1,2,3,4,5 delims= " %%a in ("%%i") do (
+        set VersionParser.GetClientLibrariesInfo.result.!count!.name=%%a
+        set VersionParser.GetClientLibrariesInfo.result.!count!.sha1=%%b
+        set VersionParser.GetClientLibrariesInfo.result.!count!.size=%%c
+        set VersionParser.GetClientLibrariesInfo.result.!count!.url=%%d
+        set VersionParser.GetClientLibrariesInfo.result.!count!.isNatives=%%e
     )
+    set /a count+=1
 )
 
 goto :EOF
