@@ -6,6 +6,7 @@ pause
 ::for /f %%i in ('jq -c -r ".versions[] | select(.id==\"%Download.Minecraft.Manifest.id%\")" "version_manifest_v2.json"') do set "Download.Minecraft.Manifest.Info.JSON=%%i"
 ::for /f %%v in ('jq -j ".versions[].id" "version_manifest_v2.json"') do echo %%v
 ::set /p "Download.Minecraft.Manifest.Type=你要安装什么类型的版本？"
+goto:EOF
 
 
 :Download.Minecraft.Manifest
@@ -17,27 +18,28 @@ goto :EOF
 
 :Download.Minecraft.Manifest.id.JSON
 for /f "delims=" %%i in ('jq -c ".versions[] | select(.id==\"%~1\")" "version_manifest_v2.json"') do set "Download.Minecraft.Manifest.%~1.JSON=%%i"
+goto:EOF
 
 
 :Download.Minecraft.Manifest.latest
 for /f "delims=" %%i in ('jq -r ".latest.release" "version_manifest_v2.json"') do set "Download.Minecraft.Manifest.latest.release=%%i"
 for /f "delims=" %%i in ('jq -r ".latest.snapshot" "version_manifest_v2.json"') do set "Download.Minecraft.Manifest.latest.snapshot=%%i"
+goto:EOF
 
 
 :Download.OptiFine.List
 
+goto:EOF
 
 
 :Download.Forge.List
 aria2c "https://files.minecraftforge.net/net/minecraftforge/forge/index_%~1.html"
 findstr /r /c:"^[0-9]*\.[0-9]*\.[0-9]*" "index_%~1.html"
-
 goto :EOF
 
 
 :Download.Forge
 aria2c "https://maven.minecraftforge.net/net/minecraftforge/forge/%~1/forge-%~1-installer.jar" %~2
-
 goto :EOF
 
 
@@ -64,5 +66,7 @@ goto :EOF
 :Download.Tools.curl
 certutil
 goto :EOF
+
+
 
 

@@ -10,6 +10,7 @@ set Filter=id,name,errorMessage
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.NameToID.JSON! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.NameToID.%%i=%%a"
 goto:EOF
 
+
 ::TODO：怎么用，怎么返回
 :Account.Mojang_API.IDToName
 for /f "delims=" %%i in ('curl -s -X POST --json "%~1" "https://api.minecraftservices.com/minecraft/profile/lookup/bulk/byname" ^| jq -c .') do set "Account.Mojang_API.IDToName.JSON=%%i"
@@ -118,5 +119,7 @@ for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %~1" "https:/
 set Filter=feature,rollout
 for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetMigration! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.ChangeCape.%%i=%%a"
 goto:EOF
+
+
 
 
