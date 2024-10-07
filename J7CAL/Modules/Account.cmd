@@ -30,10 +30,10 @@ for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetP
 goto:EOF
 
 
-:Account.Mojang_API.GetPlayerAttributes
-for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %~1" "https://api.minecraftservices.com/player/attributes" ^| jq -c .') do set "Account.Mojang_API.GetPlayerAttributes.JSON=%%i"
+:Account.Mojang_API.GetPlayerAttribute
+for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %~1" "https://api.minecraftservices.com/player/attributes" ^| jq -c .') do set "Account.Mojang_API.GetPlayerAttribute.JSON=%%i"
 set Filter=privileges,profanityFilterPreferences,banStatus
-for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetPlayerAttributes.JSON! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.GetPlayerAttributes.%%i=%%a"
+for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetPlayerAttribute.JSON! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.GetPlayerAttribute.%%i=%%a"
 goto:EOF
 
 
@@ -44,10 +44,10 @@ for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetB
 goto:EOF
 
 
-:Account.Mojang_API.GetPlayerCertificates
-for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %~1" "https://api.minecraftservices.com/player/certificates" ^| jq -c .') do set "Account.Mojang_API.GetPlayerCertificates.JSON=%%i"
+:Account.Mojang_API.GetPlayerCertificate
+for /f "delims=" %%i in ('curl -s -X GET -H "Authorization: Bearer %~1" "https://api.minecraftservices.com/player/certificates" ^| jq -c .') do set "Account.Mojang_API.GetPlayerCertificate.JSON=%%i"
 set Filter=keyPair,publicKeySignature,publicKeySignatureV2,expiresAt,refreshedAfter
-for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetPlayerCertificates.JSON! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.GetPlayerCertificates.%%i=%%a"
+for %%i in (%Filter%) do for /f "delims=" %%a in ('echo !Account.Mojang_API.GetPlayerCertificate.JSON! ^| jq -c -r ".%%i"') do set "Account.Mojang_API.GetPlayerCertificate.%%i=%%a"
 goto:EOF
 
 
