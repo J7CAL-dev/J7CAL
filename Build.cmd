@@ -1,3 +1,3 @@
-mkdir Output
-copy /b "J7CAL\Modules\*.cmd" "Output\Modules.cmd"
-copy /b "J7CAL\Main.cmd"+"Output\Modules.cmd" "Output\J7CAL.cmd"
+mkdir "J7CAL\Debug"
+copy /b "J7CAL\Modules\*.cmd" "J7CAL\Debug\Modules.cmd"
+copy /b "J7CAL\Main.cmd"+"J7CAL\Debug\Modules.cmd" "J7CAL\Debug\J7CAL.cmd"

@@ -1,5 +1,5 @@
 :Download.Minecraft.Start
-call:Download.Forge.List 1.21
+call:Download.Forge.List 1.21.1
 pause
 ::for /f %%i in ('jq -c -r ".versions[] | select(.type==\"%Download.Minecraft.Manifest.Type%\") | .id" "version_manifest_v2.json"') do echo %%i
 ::set /p "Download.Minecraft.Manifest.id=你要安装什么版本？"
@@ -29,28 +29,40 @@ for /f "delims=" %%i in ('jq -r ".latest.snapshot" "version_manifest_v2.json"') 
 
 
 :Download.Forge.List
-curl -O -s "https://files.minecraftforge.net/net/minecraftforge/forge/index_%~1.html"
-for /f %%i in (index_%~1.html) do if %%i=="<tbody>" set tbody=1 & if %%i=="</tbody>" set tbody=0 & if %tbody%==1 (echo %%i) > %~1.txt
+aria2c "https://files.minecraftforge.net/net/minecraftforge/forge/index_%~1.html"
+findstr /r /c:"^[0-9]*\.[0-9]*\.[0-9]*" "index_%~1.html"
+
+goto :EOF
+
+
+:Download.Forge
+aria2c "https://maven.minecraftforge.net/net/minecraftforge/forge/%~1/forge-%~1-installer.jar" %~2
+
+goto :EOF
 
 
 :Download.NeoForge.List
 
+goto :EOF
 
 
 :Download.Fabric.List
 
+goto :EOF
 
 
 :Download.Quilt.List
 
+goto :EOF
 
 
 :Download.LiteLoader.List
 
+goto :EOF
 
 
-:Download.Tools
-
-
+:Download.Tools.curl
+certutil
+goto :EOF
 
 
